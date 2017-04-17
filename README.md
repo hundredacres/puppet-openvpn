@@ -1,6 +1,8 @@
+[**Looking for Maintainers**](https://github.com/luxflux/puppet-openvpn/issues/228): This project is looking for maintainers.
+
 # OpenVPN Puppet module [![Build Status](https://travis-ci.org/luxflux/puppet-openvpn.svg?branch=master)](https://travis-ci.org/luxflux/puppet-openvpn)
 
-Puppet module to manage OpenVPN servers
+Puppet module to manage OpenVPN servers and clients.
 
 ## Features
 
@@ -26,11 +28,7 @@ Puppet module to manage OpenVPN servers
 
 ## Puppet
 
-* Version >= 3
-* Version 2.x with `puppet-hiera`
-
-If you want to use it with Puppet 2.7 without hiera, use a [2.x
-version](https://github.com/luxflux/puppet-openvpn/tree/2.x).
+* Version >= 4
 
 ## Example
 

@@ -665,8 +665,12 @@ define openvpn::server(
     notify  => $lnotify,
   }
 
+  $ensure = $secret ? {
+    undef => absent,
+    default => present,
+  }
   file { "/etc/openvpn/${name}/keys/pre-shared.secret":
-    ensure  => $secret ? { undef => absent, default => present, },
+    ensure  => $ensure,
     owner   => root,
     group   => root,
     mode    => '0440',
@@ -678,6 +682,8 @@ define openvpn::server(
     file {
       "${etc_directory}/openvpn/${name}/auth/ldap.conf":
         ensure  => present,
+        owner   => root,
+        mode    => '0400',
         content => template('openvpn/ldap.erb'),
         require => Package['openvpn-auth-ldap'],
     }
@@ -700,7 +706,7 @@ define openvpn::server(
   if $::openvpn::params::namespecific_rclink {
     file { "/usr/local/etc/rc.d/openvpn_${name}":
       ensure => link,
-      source => "${etc_directory}/rc.d/openvpn",
+      target => "${etc_directory}/rc.d/openvpn",
     }
 
     file { "/etc/rc.conf.d/openvpn_${name}":
@@ -714,7 +720,10 @@ define openvpn::server(
       service { "openvpn_${name}":
         ensure  => running,
         enable  => true,
-        require => File["${etc_directory}/openvpn/${name}.conf"],
+        require => [
+          File["${etc_directory}/openvpn/${name}.conf"],
+          File["/usr/local/etc/rc.d/openvpn_${name}"],
+        ],
       }
       if !extca_enabled {
         Openvpn::Ca[$ca_name] -> Service["openvpn_${name}"]
